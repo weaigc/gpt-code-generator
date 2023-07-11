@@ -1,0 +1,49 @@
+{
+  "name": "gpt-code-generator",
+  "version": "0.0.1",
+  "description": "An experimental tool that creates app scaffold code with GPT.",
+  "engines": {
+    "node": ">=18"
+  },
+  "bin": {
+    "gpt-code-generator": "./dist/bin/cli.js"
+  },
+  "scripts": {
+    "build": "rimraf -rf ./dist && tsc -p ./",
+    "debug": "cross-env DEBUG=gpt-code-generator tsx ./src/bin/cli.ts",
+    "test": "tsx ./tests/index",
+    "prepublishOnly": "npm run build"
+  },
+  "author": "weaigc",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "debug": "^4.3.4",
+    "fs-extra": "^11.1.1",
+    "gradio-chatbot": "latest"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.8",
+    "@types/node": "^20.3.3",
+    "cross-env": "^7.0.3",
+    "rimraf": "^5.0.1",
+    "tsx": "^3.12.7",
+    "type-fest": "^3.12.0",
+    "typescript": "^5.1.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/weaigc/gpt-code-generator.git"
+  },
+  "keywords": [
+    "ai",
+    "gpt",
+    "code",
+    "chatgpt",
+    "generator",
+    "scaffold"
+  ],
+  "bugs": {
+    "url": "https://github.com/weaigc/gpt-code-generator/issues"
+  },
+  "homepage": "https://github.com/weaigc/gpt-code-generator#readme"
+}
