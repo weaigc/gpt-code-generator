@@ -10,7 +10,7 @@
 
 - [Installation](#installation)
 - [Usage](#usage)
-- [Demo projects](#demo-projects)
+- [Demo](#demo)
 - [License](#license)
 
 ## Installation
@@ -30,7 +30,7 @@ npx gpt-code-generator "create a react app"
 gpt-code-generator please create a next.js app
 ```
 
-## Demo projects
+## Demo
 Here is demo projects created by `gpt-code-generator`.
 
 * [React App](./tests//fixtures/react-app/)
