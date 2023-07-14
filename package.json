@@ -1,6 +1,6 @@
 {
   "name": "gpt-code-generator",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "An experimental tool that creates app scaffold code with GPT.",
   "engines": {
     "node": ">=18"
@@ -19,6 +19,7 @@
   "dependencies": {
     "debug": "^4.3.4",
     "fs-extra": "^11.1.1",
+    "gpt-web": "^0.0.3",
     "gradio-chatbot": "latest"
   },
   "devDependencies": {

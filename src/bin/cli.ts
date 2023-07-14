@@ -2,12 +2,15 @@
 
 import path from 'node:path';
 import { GradioChatBot } from 'gradio-chatbot';
+import ChatGPT from 'gpt-web';
 import fs from 'fs-extra';
 import Debug from 'debug';
 import { Spinner } from '../utils/spinner';
 import { RL } from '../utils/rl';
 
-const debug = Debug('ai-generator');
+import { getConfig } from 'gpt-web/dist/config';
+
+const debug = Debug('gpt-code-generator');
 const root = process.cwd();
 
 const excludeFiles = ['.git', 'node_modules'].map(dir => `${dir}/`).concat(['package-lock.json', 'yarn.lock']);
@@ -32,7 +35,7 @@ const resolvePath = (filePath: string) => {
   return filePath.trim().startsWith(terminalRoot) ? filePath : `/app${filePath}`;
 }
 
-async function doAction(filePath: string, bot: GradioChatBot, prompt?: string) {
+async function doAction(filePath: string, bot: GradioChatBot | ChatGPT, prompt?: string) {
   const action = filePath.endsWith('/') ? 'ls' : 'write';
   if (!prompt) {
     prompt = action === 'ls' ? `[ls -aF ${filePath}]` : `[cat ${filePath}]`;
@@ -53,8 +56,8 @@ async function doAction(filePath: string, bot: GradioChatBot, prompt?: string) {
         file = RegExp.$1;
       }
       if (excludeFiles.includes(file) || !/^[a-z0-9]/i.test(file)) continue;
-      debug('write:', path.relative(terminalRoot, file));
       file = resolvePath(path.join(filePath, file));
+      debug('write:', file);
       files.push(file);
       if (file.endsWith('/')) {
         spinner.write(`mkdir: ${path.relative(terminalRoot, file)}\n`);
@@ -68,10 +71,12 @@ async function doAction(filePath: string, bot: GradioChatBot, prompt?: string) {
 }
 
 export async function cli(initPrompt: string) {
-  const bot = new GradioChatBot({
-    url: '0',
-    historySize: 100,
-  });
+  const { email = process.env.OPENAI_EMAIL, password = process.env.OPENAI_PASSWORD } = await getConfig();
+  const bot = email && password ? new ChatGPT(email, password) :
+    new GradioChatBot({
+      url: '0',
+      historySize: 100,
+    });
 
   await fs.ensureDir(path.join(root, 'app'));
   await fs.emptyDir(path.join(root, 'app'));
@@ -88,7 +93,7 @@ export async function cli(initPrompt: string) {
   do {
     if (!files.length) {
       initPrompt = `${systemPrompt}，我的需求是：${initPrompt}. 你当前的默认工作目录是 ${terminalRoot}, 里面包含了需求中提到的代码。我的第一个命令是 [ls -aF]`;
-      await doAction(terminalRoot, bot, initPrompt);
+      await doAction(terminalRoot + '/', bot, initPrompt);
     } else {
       const file = files.shift();
       await doAction(file, bot);
