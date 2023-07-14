@@ -1,6 +1,6 @@
 <div align="center">
 
-# GPT code generator
+# GPT Code Generator
 
 > An experimental tool that creates app scaffold code with GPT.
 
